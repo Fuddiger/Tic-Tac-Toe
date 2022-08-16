@@ -1,0 +1,87 @@
+#imports
+from IPython.display import clear_output
+
+#User chooses a letter, returns 'X' or 'O'
+def choose_letter(player):
+    print('Welcome to Tic Tac Toe!')
+    while player[1] != 'X' and player[1] != 'O':
+        player[1] = input(f'Player {player[0]}, to choose your letter, please press x or o and hit enter: ').upper()
+    return player
+
+#Creates game board
+def make_board(board):
+    print(f' {board[1]} | {board[2]} | {board[3]}')
+    print('---|---|---')
+    print(f' {board[4]} | {board[5]} | {board[6]}')
+    print('---|---|---')
+    print(f' {board[7]} | {board[8]} | {board[9]}')
+        
+#Player chooses a board space for their letter
+def player_turn(player,board):
+    position = ''
+    while position not in board and position not in ['X','O']:
+         position = input(f'Player {player[0]}, where would you like to place an {player[1]} (1-9)?:')
+    return int(position)
+
+#Changes whose turn it is
+def change_turn(player):
+    if player[0] == "One":
+        player[0] = "Two"
+    else:
+        player[0] = "One"
+    if player[1] == 'X':
+        player[1] = 'O'
+    else:
+        player[1] = 'X'
+    return player
+          
+#Checks game state for win or draw
+def check_state(board,player):
+    #square combinations that are winners
+    winners = [[1,2,3],[4,5,6],[7,8,9],[1,4,7],[2,5,8],[3,6,9],[1,5,9],[7,5,3]]
+    #checks if winning position sets all have the same value in them
+    for sets in winners:
+        if board[sets[0]] == board[sets[1]] == board[sets[2]]:
+            return 'win'
+        else:
+            pass        
+    #check if the board is full without a winner
+    if sorted(set(board)) == ['O','X','test']:
+        return 'draw'
+    else:
+        return 'playing'
+    
+
+def end_game(game_state, player, board):
+    clear_output()
+    make_board(board)
+    if game_state == "win":
+        print(f"Player {player[0]} wins with the {player[1]}'s")
+    elif game_state == "draw":
+        print("This game ends in a draw!")
+    else:
+        pass
+#Checks if the player wants to play again or ends
+def restart():
+    play_again = ''
+    while play_again != 'y' and play_again != 'n':
+            play_again = input('Would you like to play again(y/n)?').lower()
+    return play_again
+
+play_again = 'y'
+while play_again == 'y':
+    clear_output()
+    board = ['test','1','2','3','4','5','6','7','8','9']
+    game_state = 'playing'
+    player = ["One",'']
+    player = choose_letter(player)
+    while game_state == 'playing':
+        clear_output()
+        make_board(board)
+        change = player_turn(player,board)
+        board[change] = player[1]
+        game_state = check_state(board,player)
+        end_game(game_state,player,board)
+        player = change_turn(player)
+    play_again = restart()
+print('Thanks for playing!')
